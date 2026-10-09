@@ -1,0 +1,20 @@
+# Terraform local data
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+**/*.tfplan
+**/.terraform.lock.hcl
+
+# Terraform variable secrets
+**/*.tfvars
+**/*.tfvars.json
+
+# Credentials and keys
+**/*.pem
+**/*.key
+**/.env
+**/.env.*
+
+# Local evidence and backend bootstrap state
+/evidence/
+/backend-bootstrap/
