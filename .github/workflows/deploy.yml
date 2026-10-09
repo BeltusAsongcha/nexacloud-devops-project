@@ -93,31 +93,39 @@ jobs:
       - name: Verify GDPR log sanitisation
         shell: bash
         run: |
-          echo "GDPR log protection verification"
-
           python3 - <<'PY'
           from pathlib import Path
 
           workflow = Path(".github/workflows/deploy.yml").read_text()
 
-          prohibited = [
-              'echo "$DATABASE_URL"',
-              'echo "Deploying with DATABASE_URL:',
-              'printenv',
-              'env | sort',
-              'set -x',
-          ]
+          # Check executable shell logging statements, not strings
+          # inside the verification script itself.
+          lines = workflow.splitlines()
 
-          for pattern in prohibited:
-              assert pattern not in workflow, f"Unsafe logging pattern: {pattern}"
+          unsafe = []
+          for line in lines:
+              stripped = line.strip()
 
-          print("client_ip: excluded from workflow output")
-          print("session_token: excluded from workflow output")
-          print("user_id: excluded from workflow output")
+              if stripped.startswith("echo ") and (
+                  "$DATABASE_URL" in stripped
+                  or "$SESSION_TOKEN" in stripped
+                  or "$CLIENT_IP" in stripped
+                  or "$USER_ID" in stripped
+              ):
+                  unsafe.append("Unsafe sensitive-value logging")
+
+              if stripped in ("printenv", "env", "env | sort", "set -x"):
+                  unsafe.append("Unsafe environment logging")
+
+          if unsafe:
+              raise SystemExit("GDPR log verification failed")
+
+          print("GDPR static verification passed.")
+          print("client_ip: not emitted by workflow")
+          print("session_token: not emitted by workflow")
+          print("user_id: not emitted by workflow")
           print("DATABASE_URL: value not printed")
-          print("Static workflow log checks passed.")
           PY
-
       - name: Deployment verification summary
         run: |
           echo "Build completed successfully."
