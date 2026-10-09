@@ -56,6 +56,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Mask GDPR-sensitive fields
+        shell: bash
+        env:
+          CLIENT_IP: ${{ secrets.CLIENT_IP }}
+          USER_ID: ${{ secrets.USER_ID }}
+        run: |
+          if [[ -n "$CLIENT_IP" ]]; then
+            echo "::add-mask::$CLIENT_IP"
+          fi
+
+          if [[ -n "$USER_ID" ]]; then
+            echo "::add-mask::$USER_ID"
+          fi
+
+          # session_token is intentionally not collected,
+          # stored, printed, or passed to this workflow.
+          echo "GDPR masking controls initialized."
       - name: Verify production database secret configuration
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL_PRD }}
