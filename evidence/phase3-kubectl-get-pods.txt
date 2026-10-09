@@ -1,0 +1,2 @@
+NAME                             READY   STATUS    RESTARTS   AGE
+nexacloud-api-6949fc96cf-j84cv   1/1     Running   0          4m54s

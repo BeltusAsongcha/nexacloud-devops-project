@@ -1,0 +1,7 @@
+NAME                   TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+auth-service           ClusterIP   10.109.120.140   <none>        3003/TCP         7d4h
+booking-api            ClusterIP   10.98.170.166    <none>        3001/TCP         7d4h
+kubernetes             ClusterIP   10.96.0.1        <none>        443/TCP          7d23h
+nexacloud-api          NodePort    10.104.211.231   <none>        3000:30805/TCP   4m54s
+notification-service   ClusterIP   10.109.63.131    <none>        3004/TCP         7d4h
+payment-api            ClusterIP   10.105.100.214   <none>        3002/TCP         7d4h
